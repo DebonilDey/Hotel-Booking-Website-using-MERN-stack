@@ -1,0 +1,131 @@
+NodeJS to MONFODB Connection
+1. Install Mongob
+https://www.mongodb.com/try/download/community
+
+2. Install NOSQLBOOSTER - IDE FOR MONGODB
+https://nosqlbooster.com/downloads
+
+3. RUN NOSQL BOOSTER
+3.1. CLICK ON CONNECT
+3.2. CLICK ON CREATE
+3.3. CLICK ON TEST CONNECTION
+
+4. IF YOU GET OK CLICK ON SAVE AND CONNECT OPTION
+IF NOT GO TO SERVICE AND START MONGODB AND START FROM OPTION 3.
+
+5. RIGHT CLICK ON LOCAL HOST AND CREATE A DATABSE. (LearnMERN)
+
+6. Minimize IT.
+--------------------------------------------
+1. CREATE NODE JS PROJECT and install the following module.(IF YOU ALREADY HAVE YOU CAN USE THAT)
+
+CREATE PACKAGE.JSON
+npm init -y
+
+INSTALL EXPRESS
+npm i express
+
+INISTALL CORS
+npm i cors
+
+INSTALL MONGOOSE
+npm i mongoose
+
+AFTER INSTALLING, CHECK PACKAGE.JSON FILE
+
+2. CREATE DBCONNECT.JS FILE
+
+2.1.// STEP-1 : IMPORT MONGOOSE PACKAGE
+const mongoose = require('mongoose')
+
+2.2.// STEP-2 : ESTABLISH CONNECTION WITH MONGODB DATABASE THROUGH MONGOOSE
+const url = 'mongodb://localhost:27017/LearnMERN'; (LearnMERN - DBName)
+mongoose.connect(url)
+      .then( () => 
+             {
+               console.log('NODEJS TO MongoDB Connection ESTABLISH.....');
+             })
+      .catch( err => 
+              {
+               console.log('Error in DB connection : ' + JSON.stringify(err, undefined, 2));
+               process.exit();
+              }); 
+
+2.3.// STEP-3 : EXPORT MODULE mongoose because we need it in other JS file
+module.exports = mongoose;
+
+3. RUN DBCONNECT.JS for checking
+
+4. CREATE INDEX.JS
+4.1. ADD CODE TO START EXPRESS SERVER (line no 6, 9, 34)
+4.2. ADD CODE FOR BODYPARSER (line no 11, 15)
+4.3. ADD CODE FOR CORS (line no 19, 20)
+4.4. ADD CODE FOR IMPORT DBConnect (line no 25)
+
+RUN INDEX.JS for checking
+
+5.CREATE MODELS FOLDER
+5.1. CREATE EMPSCHEMA.JS FILE.
+YOUR REACT JSON STRUCTURE AND SCHEMA STRUCTURE SHOULD BE SAME OR MORE.
+                                    collection name, Schema variable name
+module.exports = schema_mongoose.model('emp_schema_collection', EmployeeSchema); 
+
+6.CREATE CONTROLLER FOLDER
+7.CREATE EMPLOYEEAPI.JS
+7.1.// IMPORT EXPRESS SERVER
+const express = require('express');
+
+7.2.// USE Router FOR EXPRESS SERVER
+const router = express.Router();
+
+7.3 //IMPORT EMPLOYEE MODEL AND BIND IT
+const EmpModel = require('../models/employee_schema');
+
+7.4
+router.post('/register', (req, res) => 
+                 {
+                    
+//Create Object of Employee Model Class
+// And Receive value from request body and Store value within the Object
+                   const empobj = new EmpModel({
+                                 empname: req.body.empname,
+                                 empemail: req.body.empemail,
+                                 empmobile: req.body.empmobile,
+                                 empdob: req.body.empdob,
+                                 emppass: req.body.emppass,
+                                 empgender: req.body.empgender,
+                                 empcountry: req.body.empcountry,
+                                 empaddress: req.body.empaddress,
+                                 });//CLOSE EmpModel
+     //INSERT/SAVE THE RECORD/DOCUMENT
+                   empobj.save()
+                         .then(inserteddocument => {
+    res.status(200).send('DOCUMENT INSERED IN MONGODB DATABASE' +'<br\>'+ inserteddocument);
+                               })//CLOSE THEN
+                         .catch(err =>{
+    res.status(500).send({ message: err.message || 'Error in Employee Save '})
+                               });//CLOSE CATCH
+                            }//CLOSE CALLBACK FUNCTION BODY Line 27
+                            );//CLOSE POST METHOD Line 26
+
+7.5.module.exports = router;
+
+8. MODIFY INDEX.JS FILE
+8.1. // IMPORT empController
+const employeeAPI = require('./controllers/employeeAPI.js');
+
+8.2 //USE URL /emp - route to studentController 
+app.use('/emp', employeeAPI);
+
+
+
+
+ 
+
+
+ 
+
+
+
+
+
